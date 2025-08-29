@@ -28,6 +28,8 @@ For each snippet:
 3. Suggest improvements (or provide a corrected version of the code if you prefer).
 
 ## Part 1 – Java Snippet
+
+Original code:
 ```java
 public class FileProcessor {
     private static List<String> lines = new ArrayList<>();
@@ -56,7 +58,7 @@ public class FileProcessor {
 }
 ```
 
-### Response
+### Response and Classes changed in the project
 
 Java code has several issues related to concurrency, resource management, and best practices.
 
@@ -88,6 +90,8 @@ Java code has several issues related to concurrency, resource management, and be
 
 ## Part 2 – C# Snippet
 
+Original code:
+
 ```java
 public class Downloader
 {
@@ -113,7 +117,7 @@ public class Downloader
 
 ```
 
-### Response
+### Response and Classes changed in the project
 
 The C# code also presents concurrency and resource management issues, but in the context of asynchronous programming.
 
