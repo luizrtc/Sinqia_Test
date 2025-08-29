@@ -20,7 +20,12 @@ asynchronous execution, and clean coding practices.**
 5.  There is **no single correct answer** – we are evaluating your reasoning, experience, and
     ability to justify technical decisions.
 
+### Your Task
+For each snippet:
 
+1. Identify the problems (bugs, concurrency issues, inefficiencies, bad practices).
+2. Explain why each problem is critical in a real-world system.
+3. Suggest improvements (or provide a corrected version of the code if you prefer).
 
 ## Part 1 – Java Snippet
 ```java
