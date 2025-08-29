@@ -80,3 +80,54 @@ Java code has several issues related to concurrency, resource management, and be
 *   **Solution:** For a real system, exception handling should be more sophisticated. At a minimum, the exception should be logged in a structured way (using frameworks like Log4j, SLF4J). The application should also decide whether to continue, stop, or retry based on the nature of the exception.
 
 ---
+
+## Part 2 – C# Snippet
+
+```java
+public class Downloader
+{
+    private static List<string> cache = new List<string>();
+    public static async Task Main(string[] args)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        DownloadAsync("https://example.com/data/" + i);
+    }
+    Console.WriteLine("Downloads started");
+    Console.WriteLine("Cache size: " + cache.Count);
+}
+    private static async Task DownloadAsync(string url)
+{
+    using (HttpClient client = new HttpClient())
+    {
+        var data = await client.GetStringAsync(url);
+        cache.Add(data);
+    }
+}
+}
+
+```
+
+### Response
+
+The C# code also presents concurrency and resource management issues, but in the context of asynchronous programming.
+
+### 1. Lack of Awaiting (No `await` usage)
+
+*   **Problem:** The `for` loop in the `Main` method calls `DownloadAsync` but does not use the `await` keyword to wait for each task to complete. `await` is only used within the `DownloadAsync` method. This means the loop fires 10 download tasks in parallel, and the main thread continues its execution immediately. The two `Console.WriteLine` lines will execute before any download completes. The `cache.Count` value will be zero, which is a misleading result.
+*   **Impact:** The program does not reflect the expected execution flow and the final state of the system. The output is incorrect and does not represent the actual processing result.
+*   **Solution:** The `Main` method needs to wait for all asynchronous tasks to finish. The best way to do this for multiple tasks is by using `Task.WhenAll`. It accepts a collection of tasks and returns a single task that completes when all tasks in the collection have completed.
+
+### 2. Concurrency and `List` (Not thread-safe)
+
+*   **Problem:** The `List<string> cache` is a shared collection among asynchronous threads. Like `ArrayList` in Java, `List<T>` in C# is not thread-safe. Adding items (`cache.Add(data)`) from multiple threads simultaneously can cause race conditions, leading to data corruption or exceptions.
+*   **Impact:** Inconsistent data and unpredictable bugs in systems that process information in parallel.
+*   **Solution:** Use a thread-safe collection. The ideal class in .NET for this scenario is `ConcurrentBag<T>`, as it is optimized for parallel addition scenarios where order is not strictly important. If order were crucial, `ConcurrentQueue<T>` would be a good option.
+
+### 3. Inefficient `HttpClient` Instantiation
+
+*   **Problem:** The `DownloadAsync` method creates a new instance of `HttpClient` on each call (`new HttpClient()`). `HttpClient` is designed to be instantiated once and reused throughout the application's lifetime, as it manages a connection pool. Creating a new instance for each request is inefficient and can lead to socket exhaustion.
+*   **Impact:** In a system with many requests, this can lead to performance issues and failures due to operating system resource exhaustion.
+*   **Solution:** The best practice is to create a single static instance of `HttpClient` and reuse it.
+
+---
